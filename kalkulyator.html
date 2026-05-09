@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Kalkulyator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .display {
+            background: #2c3e50;
+            color: white;
+            font-size: 32px;
+            padding: 20px;
+            text-align: right;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .number {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .number:hover {
+            background: #d5dbdd;
+        }
+
+        .operator {
+            background: #3498db;
+            color: white;
+        }
+
+        .operator:hover {
+            background: #2980b9;
+        }
+
+        .equals {
+            background: #27ae60;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .equals:hover {
+            background: #229954;
+        }
+
+        .clear {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .clear:hover {
+            background: #c0392b;
+        }
+
+        .zero {
+            grid-column: span 2;
+        }
+
+        .scientific {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .scientific:hover {
+            background: #8e44ad;
+        }
+
+        .history {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .history h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .history-item {
+            padding: 5px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .theme-toggle {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .theme-toggle button {
+            background: #34495e;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .dark-mode {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .dark-mode .container {
+            background: rgba(44, 62, 80, 0.95);
+            color: white;
+        }
+
+        .dark-mode h1 {
+            color: white;
+        }
+
+        .dark-mode .display {
+            background: #1a252f;
+        }
+
+        .dark-mode .number {
+            background: #34495e;
+            color: white;
+        }
+
+        .dark-mode .number:hover {
+            background: #2c3e50;
+        }
+
+        .dark-mode .history {
+            background: #34495e;
+        }
+
+        .dark-mode .history h3 {
+            color: white;
+        }
+
+        .dark-mode .history-item {
+            background: #2c3e50;
+            color: #ecf0f1;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            button {
+                padding: 15px;
+                font-size: 16px;
+            }
+
+            .display {
+                font-size: 24px;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧮 Online Kalkulyator</h1>
+        
+        <div class="theme-toggle">
+            <button onclick="toggleTheme()">🌙/☀️ Tema</button>
+        </div>
+
+        <div class="display" id="display">0</div>
+
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="clear" onclick="deleteLast()">⌫</button>
+            <button class="scientific" onclick="appendFunction('Math.sqrt(')">√</button>
+            <button class="operator" onclick="appendOperator('/')">÷</button>
+
+            <button class="number" onclick="appendNumber('7')">7</button>
+            <button class="number" onclick="appendNumber('8')">8</button>
+            <button class="number" onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperator('*')">×</button>
+
+            <button class="number" onclick="appendNumber('4')">4</button>
+            <button class="number" onclick="appendNumber('5')">5</button>
+            <button class="number" onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperator('-')">−</button>
+
+            <button class="number" onclick="appendNumber('1')">1</button>
+            <button class="number" onclick="appendNumber('2')">2</button>
+            <button class="number" onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+
+            <button class="number zero" onclick="appendNumber('0')">0</button>
+            <button class="number" onclick="appendNumber('.')">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+
+            <button class="scientific" onclick="appendFunction('Math.sin(')">sin</button>
+            <button class="scientific" onclick="appendFunction('Math.cos(')">cos</button>
+            <button class="scientific" onclick="appendFunction('Math.tan(')">tan</button>
+            <button class="scientific" onclick="appendOperator('%')">%</button>
+
+            <button class="scientific" onclick="appendFunction('Math.log(')">ln</button>
+            <button class="scientific" onclick="appendFunction('Math.log10(')">log</button>
+            <button class="scientific" onclick="appendFunction('Math.pow(')">x^y</button>
+            <button class="scientific" onclick="appendFunction('1/')">1/x</button>
+
+            <button class="scientific" onclick="appendNumber('Math.PI')">π</button>
+            <button class="scientific" onclick="appendNumber('Math.E')">e</button>
+            <button class="scientific" onclick="appendFunction('Math.abs(')">|x|</button>
+            <button class="scientific" onclick="factorial()">x!</button>
+        </div>
+
+        <div class="history">
+            <h3>📝 Hisoblash tarixi</h3>
+            <div id="history-list"></div>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let historyList = document.getElementById('history-list');
+        let currentInput = '0';
+        let shouldResetDisplay = false;
+        let history = [];
+
+        function updateDisplay() {
+            display.textContent = currentInput;
+        }
+
+        function appendNumber(num) {
+            if (shouldResetDisplay) {
+                currentInput = '0';
+                shouldResetDisplay = false;
+            }
+
+            if (currentInput === '0' && num !== '.') {
+                currentInput = num;
+            } else {
+                currentInput += num;
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (shouldResetDisplay) {
+                shouldResetDisplay = false;
+            }
+
+            const lastChar = currentInput[currentInput.length - 1];
+            if (['+', '-', '*', '/', '%'].includes(lastChar)) {
+                currentInput = currentInput.slice(0, -1) + op;
+            } else {
+                currentInput += op;
+            }
+            updateDisplay();
+        }
+
+        function appendFunction(func) {
+            if (shouldResetDisplay) {
+                currentInput = '';
+                shouldResetDisplay = false;
+            }
+            currentInput += func;
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = '0';
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (currentInput.length > 1) {
+                currentInput = currentInput.slice(0, -1);
+            } else {
+                currentInput = '0';
+            }
+            updateDisplay();
+        }
+
+        function calculate() {
+            try {
+                let expression = currentInput;
+                
+                // Matematik funksiyalarni almashtirish
+                expression = expression.replace(/Math\.sqrt\(/g, 'Math.sqrt(');
+                expression = expression.replace(/Math\.sin\(/g, 'Math.sin(');
+                expression = expression.replace(/Math\.cos\(/g, 'Math.cos(');
+                expression = expression.replace(/Math\.tan\(/g, 'Math.tan(');
+                expression = expression.replace(/Math\.log\(/g, 'Math.log(');
+                expression = expression.replace(/Math\.log10\(/g, 'Math.log10(');
+                expression = expression.replace(/Math\.pow\(/g, 'Math.pow(');
+                expression = expression.replace(/Math\.abs\(/g, 'Math.abs(');
+                expression = expression.replace(/1\//g, '1/');
+                expression = expression.replace(/Math\.PI/g, 'Math.PI');
+                expression = expression.replace(/Math\.E/g, 'Math.E');
+                
+                // Qavslarni yopish
+                let openParens = (expression.match(/\(/g) || []).length;
+                let closeParens = (expression.match(/\)/g) || []).length;
+                for (let i = 0; i < openParens - closeParens; i++) {
+                    expression += ')';
+                }
+
+                const result = eval(expression);
+                
+                // Tarixga qo'shish
+                addToHistory(currentInput, result);
+                
+                currentInput = result.toString();
+                shouldResetDisplay = true;
+                updateDisplay();
+            } catch (error) {
+                currentInput = 'Xatolik';
+                shouldResetDisplay = true;
+                updateDisplay();
+            }
+        }
+
+        function factorial() {
+            try {
+                const num = parseInt(currentInput);
+                if (num < 0) {
+                    throw new Error("Manfiy sonlar uchun faktorial hisoblanmaydi");
+                }
+                
+                let result = 1;
+                for (let i = 2; i <= num; i++) {
+                    result *= i;
+                }
+                
+                addToHistory(`${num}!`, result);
+                currentInput = result.toString();
+                shouldResetDisplay = true;
+                updateDisplay();
+            } catch (error) {
+                currentInput = 'Xatolik';
+                shouldResetDisplay = true;
+                updateDisplay();
+            }
+        }
+
+        function addToHistory(expression, result) {
+            const historyItem = `${expression} = ${result}`;
+            history.unshift(historyItem);
+            
+            if (history.length > 10) {
+                history.pop();
+            }
+            
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            historyList.innerHTML = '';
+            history.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.textContent = item;
+                historyList.appendChild(div);
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Klaviatura support
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            
+            if (key >= '0' && key <= '9') {
+                appendNumber(key);
+            } else if (key === '.') {
+                appendNumber('.');
+            } else if (key === '+' || key === '-' || key === '*' || key === '/') {
+                appendOperator(key);
+            } else if (key === 'Enter' || key === '=') {
+                calculate();
+            } else if (key === 'Escape' || key === 'c' || key === 'C') {
+                clearDisplay();
+            } else if (key === 'Backspace') {
+                deleteLast();
+            }
+        });
+
+        // Dastlabki sozlamalar
+        updateDisplay();
+    </script>
+</body>
+</html>
